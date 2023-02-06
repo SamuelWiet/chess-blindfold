@@ -2,9 +2,10 @@ import React from "react";
 import { useTable } from "react-table";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Row } from "react-bootstrap";
+import { Button, Col, FormControl, Row } from "react-bootstrap";
 import Chessdiagram from "react-chessdiagram";
 import { defaultGetRows } from "./helpers.jsx";
+import styles from "./App.css";
 
 const lightSquareColor = "#f2f2f2";
 const darkSquareColor = "#bfbfbf";
@@ -139,7 +140,7 @@ export class MoveTable extends React.Component {
   constructor(props) {
     super(props);
   }
-  getMoves = () => defaultGetRows(this.props.pgn);
+  getMoves = () => defaultGetRows(this.props.pgn());
   rowMapper = (row) => ({
     moveNumber: row[0],
     white: row[1],
@@ -150,16 +151,51 @@ export class MoveTable extends React.Component {
     var data = this.getData();
     if (data.length == 0)
       return <div style={{ textAlign: "center" }}>No moves yet</div>;
+    var pgnValue = this.props.pgn();
+    const handleChange = (event) => {
+      pgnValue = event.target.value;
+    };
+    const handleClick = () => {
+      this.props.load_pgn(pgnValue);
+      this.forceUpdate();
+    };
+
     return (
-      <Row className="justify-content-md-center">
-        <Styles>
-          <Table columns={cols} data={data} />
-        </Styles>
-      </Row>
+      <div>
+        <Row className="justify-content-md-center">
+          <Styles>
+            <Table columns={cols} data={data} />
+          </Styles>
+        </Row>
+        <div>
+          <Row>
+            <Col sm={{ span: 10, offset: 0 }}>
+              <FormControl
+                as="textarea"
+                rows={3}
+                onChange={handleChange}
+                defaultValue={pgnValue}
+              />
+            </Col>
+            <Col sm={2}>
+              <Button
+                id="submitButton"
+                style={{ height: 50 }}
+                className={styles.loadPgnButton}
+                variant="primary"
+                onClick={handleClick}
+              >
+                Load PGN
+              </Button>
+            </Col>
+          </Row>
+        </div>
+      </div>
     );
   };
 }
 
 MoveTable.propTypes = {
-  pgn: PropTypes.string,
+  pgn: PropTypes.func,
+  load_pgn: PropTypes.func,
 };
