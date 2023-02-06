@@ -81,7 +81,7 @@ export class MoveEntry extends React.Component {
     return formattedMove;
   };
   render = () => {
-    const moves = this.props.gameClient.client.moves();
+    const moves = this.props.gameClient.client.moves().sort();
     const buttonForMove = (move) => (
       <Col key={move} xs={3} md={2}>
         <div
@@ -342,11 +342,10 @@ export class StatusWindow extends React.Component {
         <span>Computer played </span>
         <Badge bg="secondary">{this.props.computerMove}</Badge>
       </div>
-    ) : ( this.props.humanMove ? (
-            <span>Computer is thinking...</span>
-        ) : (
-            <span>Computer is waiting...</span>
-        )
+    ) : this.props.humanMove ? (
+      <span>Computer is thinking...</span>
+    ) : (
+      <span>Computer is waiting...</span>
     );
     return (
       <div>
@@ -464,7 +463,9 @@ export class App extends React.Component {
         reset={this.reset}
         status={this.state.gameClient.getStatus()}
         humanMove={this.getLastHumanMove()}
-        computerMove={ this.isPlayersMove() ? this.getLastComputerMove() : undefined }
+        computerMove={
+          this.isPlayersMove() ? this.getLastComputerMove() : undefined
+        }
       />
       <Row>
         <MoveEntry
@@ -484,10 +485,17 @@ export class App extends React.Component {
     );
   };
   handleChange = (value) => this.setState({ showType: value });
+  load_pgn = (pgn) => {
+    console.log(pgn);
+    this.state.gameClient.client.load_pgn(pgn);
+  };
   moveTableElement = () => {
     return (
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <MoveTable pgn={this.state.gameClient.client.pgn()} />
+        <MoveTable
+          pgn={this.state.gameClient.client.pgn}
+          load_pgn={this.load_pgn}
+        />
       </div>
     );
   };
