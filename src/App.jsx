@@ -486,7 +486,6 @@ export class App extends React.Component {
   };
   handleChange = (value) => this.setState({ showType: value });
   load_pgn = (pgn) => {
-    console.log(pgn);
     this.state.gameClient.client.load_pgn(pgn);
   };
   moveTableElement = () => {
