@@ -9,7 +9,6 @@ import styles from "./App.css";
 
 const lightSquareColor = "#f2f2f2";
 const darkSquareColor = "#bfbfbf";
-const flip = false;
 
 const width = window.innerWidth;
 const maxSquareSize = 50;
@@ -121,15 +120,48 @@ export class Board extends React.Component {
   constructor(props) {
     super(props);
   }
-  render = () => (
-    <Chessdiagram
-      flip={flip}
-      fen={this.props.fen}
-      squareSize={squareSize}
-      lightSquareColor={lightSquareColor}
-      darkSquareColor={darkSquareColor}
-    />
-  );
+
+  flipBoard = false;
+
+  render = () => {
+    const handleClick = () => {
+      this.flipBoard = this.flipBoard ? false : true;
+      this.forceUpdate();
+    };
+
+    return (
+      <div>
+        <Row style={{ marginTop: 20 }}>
+          <Col>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <Chessdiagram
+                flip={this.flipBoard}
+                fen={this.props.fen}
+                squareSize={squareSize}
+                lightSquareColor={lightSquareColor}
+                darkSquareColor={darkSquareColor}
+              />
+            </div>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={6}>
+            <div className="text-center">
+              <Button
+                style={{ height: 40 }}
+                className={styles.flipBoardButton}
+                variant="primary"
+                id="flipButton"
+                onClick={handleClick}
+              >
+                Flip
+              </Button>
+            </div>
+          </Col>
+        </Row>
+      </div>
+    );
+  };
 }
 
 Board.propTypes = {
